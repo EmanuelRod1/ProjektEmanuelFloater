@@ -1,0 +1,11 @@
+../Core/Src/debug_handler.cpp:69:6:void registerDebugCallbacks()	1
+../Core/Src/debug_handler.cpp:75:6:void setupDebugRtosObjects()	1
+../Core/Src/debug_handler.cpp:84:6:void JumpToBootloader()	1
+../Core/Src/debug_handler.cpp:134:6:void debugRxHandler(void*)	4
+../Core/Src/debug_handler.cpp:164:6:void debugRxCallback(UART_HandleTypeDef*, uint16_t)	3
+../Core/Src/debug_handler.cpp:174:6:void debugTxDone(UART_HandleTypeDef*)	2
+../Core/Src/debug_handler.cpp:179:6:void debugTxHandler(void*)	3
+../Core/Src/debug_handler.cpp:205:6:)	1
+../Core/Src/debug_handler.cpp:214:6:)	1
+../Core/Src/debug_handler.cpp:221:1:void __static_initialization_and_destruction_0()	1
+../Core/Src/debug_handler.cpp:221:1:cpp)	1

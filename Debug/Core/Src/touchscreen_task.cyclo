@@ -1,0 +1,8 @@
+../Core/Src/touchscreen_task.cpp:28:6:void touchscreen_on()	1
+../Core/Src/touchscreen_task.cpp:33:6:void touchscreen_off()	1
+../Core/Src/touchscreen_task.cpp:38:6:void touchscreen_init()	1
+../Core/Src/touchscreen_task.cpp:46:6:void touchscreen_deinit()	1
+../Core/Src/touchscreen_task.cpp:57:6:void setupTouchscreenObjects()	1
+../Core/Src/touchscreen_task.cpp:68:6:void touchscreen_draw_overlay(uint8_t, uint8_t, uint8_t*, uint16_t)	2
+../Core/Src/touchscreen_task.cpp:81:6:void display_write_box(uint16_t, uint16_t, uint16_t, const char*, FontDef, uint16_t, uint16_t, uint8_t*, uint16_t)	1
+../Core/Src/touchscreen_task.cpp:87:6:void displayHandler(void*)	12

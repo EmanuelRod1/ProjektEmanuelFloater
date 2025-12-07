@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <cmsis_os2.h>
 #include <debug_handler.h>
+#include <data.h>
 
 /* LCD SCREEN CODE BEGIN Includes */
 #include <string.h>
@@ -92,8 +93,8 @@ void displayHandler(void *argument)
     char buffer[DISPLAY_MESSAGE_SIZE];
     FontDef font = Font_11x18;
     uint8_t character_display_buffer[Font_11x18.height*Font_11x18.width*2];
-    uint16_t color_body = ILI9341_CYAN;
-    uint16_t color_title = ILI9341_WHITE;
+    uint16_t color_body = ILI9341_RED;
+    uint16_t color_title = ILI9341_GREEN;
     uint8_t screen_on = RESET;
 
     touchscreen_deinit();
@@ -118,12 +119,17 @@ void displayHandler(void *argument)
         {
             // initialize screen
             touchscreen_init();
-            touchscreen_draw_overlay(font.height, 6, character_display_buffer, sizeof(character_display_buffer));
+            //touchscreen_draw_overlay(font.height, 6, character_display_buffer, sizeof(character_display_buffer));
             screen_on = SET;
         }
 
+        /*
+         * Commented to test image drawing.
+         * */
+
 		// display message
-        display_write_box(0,0,0, (char*)data.message, font, color_title, ILI9341_BLACK, character_display_buffer, sizeof(character_display_buffer));
+
+        /*display_write_box(0,0,0, (char*)data.message, font, color_title, ILI9341_BLACK, character_display_buffer, sizeof(character_display_buffer));
         sprintf(buffer, "Fw: %s Id: %d", FW_VERSION, data.modem_id);
         display_write_box(0,0,1, buffer, font, color_title, ILI9341_BLACK, character_display_buffer, sizeof(character_display_buffer));
 
@@ -194,5 +200,8 @@ void displayHandler(void *argument)
 		display_write_box(5,1,0, "Mot fault", font, color_title, ILI9341_BLACK, character_display_buffer, sizeof(character_display_buffer));
 		sprintf(buffer, "%-*s", 5, data.motor_fault ? "FAULT" : "OK");
 		display_write_box(5,1,1, buffer, font, color_body, ILI9341_BLACK, character_display_buffer, sizeof(character_display_buffer));
+
+		*/
+		ILI9341_DrawImage(0, 0, 240, 240, &test_img_240x240[0][0]);
     }
 }

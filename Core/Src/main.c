@@ -82,7 +82,7 @@ const osEventFlagsAttr_t screenSpiDoneEvent_attributes = {
 osThreadId_t touchscreenTaskHandle;
 const osThreadAttr_t touchscreenTask_attributes = {
   .name = "touchscreenTask",
-  .stack_size = 1024 * 4,
+  .stack_size = 512 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
 /* USER CODE END PV */
@@ -126,7 +126,7 @@ int main(void)
 
   /* USER CODE END Init */
 
-  /* Configure the system clock */
+  /* Configure the system clock 4000*/
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */

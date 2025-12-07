@@ -44,7 +44,7 @@ void mainHandler(void *argument)
 		display_data.motor_running = 1;
 		display_data.motor_fault = 1;
 		display_data.depth = 1234;
-		display_data.temperature = 2856;
+		display_data.temperature = 1000;
 		display_data.batteryVoltage = 27654;
 		display_data.floaterVolume= 12345; // originally /100
 		sprintf((char*)display_data.message, "%02d/%02d/%02d %02d:%02d:%02d.%02d", 25, 11, 4, 5, 6, 7, 20);

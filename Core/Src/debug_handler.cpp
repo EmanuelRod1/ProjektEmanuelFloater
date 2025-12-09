@@ -184,9 +184,9 @@ void debugTxHandler(void *argument)
 
 	HAL_UART_Transmit(&DEBUG_UART, (uint8_t*)"started debug tx handler\r\n", 25, 1000);
 
-	uint32_t stack_space = osThreadGetStackSpace(osThreadGetId());
-	payload.size = sprintf((char*)payload.data,"debug stack space %ld\r\n",stack_space);
-	HAL_UART_Transmit(&DEBUG_UART, payload.data, payload.size, 200);
+	//uint32_t stack_space = osThreadGetStackSpace(osThreadGetId());
+	//payload.size = sprintf((char*)payload.data,"debug stack space 600\r\n",stack_space);
+	//HAL_UART_Transmit(&DEBUG_UART, payload.data, payload.size, 200);
 
   /* Infinite loop */
   for(;;)

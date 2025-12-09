@@ -33,6 +33,7 @@ typedef struct display_data_t
 
 void setupTouchscreenObjects();
 void displayHandler(void *argument);
+void touchHandler(void *argument);
 
 #ifdef __cplusplus
 }

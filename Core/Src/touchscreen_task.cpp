@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <cmsis_os2.h>
 #include <debug_handler.h>
-#include <data.h>
+#include <../../External/ili9341/testimg.h>
 
 /* LCD SCREEN CODE BEGIN Includes */
 #include <string.h>
@@ -24,6 +24,11 @@ extern "C" {
 #endif
 #include <fonts.h>
 #include <testimg.h>
+#include "main.h"
+#include <FreeRTOS.h>
+#include <queue.h>
+#include "semphr.h"
+#include <time.h>
 /* LCD SCREEN CODE END Includes */
 
 void touchscreen_on() {
@@ -49,6 +54,14 @@ void touchscreen_deinit() {
     ILI9341_TouchUnselect();
     touchscreen_off();
 }
+
+
+static SemaphoreHandle_t mutex = xSemaphoreCreateMutex();
+
+static SemaphoreHandle_t touchMutex = xSemaphoreCreateBinary();
+
+
+
 
 osMessageQueueId_t displayQueueHandle;
 const osMessageQueueAttr_t displayQueue_attributes = {
@@ -90,6 +103,8 @@ void displayHandler(void *argument)
     display_data_t data;
     Debug debug;
 
+    debug.printf("Some test!\r\n");
+
     char buffer[DISPLAY_MESSAGE_SIZE];
     FontDef font = Font_11x18;
     uint8_t character_display_buffer[Font_11x18.height*Font_11x18.width*2];
@@ -99,9 +114,13 @@ void displayHandler(void *argument)
 
     touchscreen_deinit();
 
+    uint16_t dx = 0;
+
     for(;;)
     {
-    	debug.printf("Test touch!\r\n");
+    	dx++;
+    	debug.printf("touch touch! %d \r\n", dx);
+
         // receive payload
         if (osMessageQueueGet(displayQueueHandle, (void *)&data, NULL, SCREEN_TIMEOUT*1000 ) != osOK)
         {
@@ -114,6 +133,8 @@ void displayHandler(void *argument)
             }
             continue;
         }
+
+
         // turn on screen after getting a message
         if (!screen_on)
         {
@@ -122,6 +143,25 @@ void displayHandler(void *argument)
             //touchscreen_draw_overlay(font.height, 6, character_display_buffer, sizeof(character_display_buffer));
             screen_on = SET;
         }
+
+
+
+
+        /*if (xSemaphoreTake(mutex, 0) == pdTRUE) {
+
+        	//time_t seconds;
+
+        	//time(&seconds);
+		*/
+        	//display_write_box(0,0,0, (char*)data.message, font, color_title, ILI9341_BLACK, character_display_buffer, sizeof(character_display_buffer));
+        	//sprintf(buffer, "%s", "Hello");
+        	//display_write_box(0,0,1, buffer, font, color_title, ILI9341_BLACK, character_display_buffer, sizeof(character_display_buffer));
+/*
+
+
+        	xSemaphoreGive(mutex);
+        }*/
+
 
         /*
          * Commented to test image drawing.
@@ -202,6 +242,66 @@ void displayHandler(void *argument)
 		display_write_box(5,1,1, buffer, font, color_body, ILI9341_BLACK, character_display_buffer, sizeof(character_display_buffer));
 
 		*/
-		ILI9341_DrawImage(0, 0, 240, 240, &test_img_240x240[0][0]);
+		//ILI9341_DrawImage(0, 0, 240, 240, &test_img_240x240[0][0]);
+
+
+        //xQueueReceive(xQueue, &dx, portMAX_DELAY);
+
+
+
+
     }
 }
+
+
+
+
+
+
+
+
+void touchHandler(void *argument)
+{
+
+	//uint8_t character_display_buffer[Font_11x18.height*Font_11x18.width*2];
+    for (;;)
+    {
+        // čeka dok ISR ne postavi semaphore
+        /*if(xSemaphoreTake(touchMutex, portMAX_DELAY) == pdTRUE)
+        {
+            uint16_t x, y;
+
+            // uzmi SPI mutex prije čitanja
+            xSemaphoreTake(mutex, portMAX_DELAY);
+
+            ILI9341_FillRectangle(0, 100, 100, 100, ILI9341_GREEN, character_display_buffer, sizeof(character_display_buffer));
+
+            /*if(ILI9341_TouchGetCoordinates(&x, &y))
+            {
+                // pošalji koordinate na UI queue
+
+            }
+
+            ILI9341_TouchUnselect();*/
+            //xSemaphoreGive(mutex);
+        //
+    	osDelay(1000);
+    }
+}
+
+
+
+
+
+void EXTIx_IRQHandler(void)
+{
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+    HAL_GPIO_EXTI_IRQHandler(Touch_IRQ_Pin);
+
+    // postavi semaphore
+    xSemaphoreGiveFromISR(touchMutex, &xHigherPriorityTaskWoken);
+
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+}
+

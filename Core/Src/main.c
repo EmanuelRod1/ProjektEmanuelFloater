@@ -18,7 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "cmsis_os2.h"
+#include "cmsis_os.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -26,6 +26,8 @@
 #include <stdio.h>
 #include <debug_handler.h>
 #include <main_task.h>
+#include <FreeRTOS.h>
+#include <queue.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -56,7 +58,7 @@ DMA_HandleTypeDef hdma_usart2_rx;
 osThreadId_t mainTaskHandle;
 const osThreadAttr_t mainTask_attributes = {
   .name = "mainTask",
-  .stack_size = 1024 * 4,
+  .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* Definitions for debugTxTask */
@@ -73,18 +75,32 @@ const osThreadAttr_t debugRxTask_attributes = {
   .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for touchTask */
+osThreadId_t touchTaskHandle;
+const osThreadAttr_t touchTask_attributes = {
+  .name = "touchTask",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityAboveNormal,
+};
+/* Definitions for displayTask */
+osThreadId_t displayTaskHandle;
+const osThreadAttr_t displayTask_attributes = {
+  .name = "displayTask",
+  .stack_size = 350 * 4,
+  .priority = (osPriority_t) osPriorityBelowNormal,
+};
 /* Definitions for screenSpiDoneEvent */
 osEventFlagsId_t screenSpiDoneEventHandle;
 const osEventFlagsAttr_t screenSpiDoneEvent_attributes = {
   .name = "screenSpiDoneEvent"
 };
-/* USER CODE BEGIN PV */
-osThreadId_t touchscreenTaskHandle;
-const osThreadAttr_t touchscreenTask_attributes = {
-  .name = "touchscreenTask",
-  .stack_size = 512 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+/* Definitions for touchSpiDoneEvent */
+osEventFlagsId_t touchSpiDoneEventHandle;
+const osEventFlagsAttr_t touchSpiDoneEvent_attributes = {
+  .name = "touchSpiDoneEvent"
 };
+/* USER CODE BEGIN PV */
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -96,6 +112,8 @@ static void MX_SPI1_Init(void);
 void mainHandler(void *argument);
 extern void debugTxHandler(void *argument);
 extern void debugRxHandler(void *argument);
+extern void touchHandler(void *argument);
+extern void displayHandler(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -103,7 +121,6 @@ extern void debugRxHandler(void *argument);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
 /* USER CODE END 0 */
 
 /**
@@ -126,7 +143,7 @@ int main(void)
 
   /* USER CODE END Init */
 
-  /* Configure the system clock 4000*/
+  /* Configure the system clock */
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
@@ -161,6 +178,7 @@ int main(void)
   /* USER CODE END RTOS_TIMERS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
+
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
 
@@ -172,11 +190,17 @@ int main(void)
   debugTxTaskHandle = osThreadNew(debugTxHandler, NULL, &debugTxTask_attributes);
 
   /* creation of debugRxTask */
-  debugRxTaskHandle = osThreadNew(debugRxHandler, NULL, &debugRxTask_attributes);
+  //debugRxTaskHandle = osThreadNew(debugRxHandler, NULL, &debugRxTask_attributes);
+
+  /* creation of touchTask */
+  //touchTaskHandle = osThreadNew(touchHandler, NULL, &touchTask_attributes);
+
+  /* creation of displayTask */
+  displayTaskHandle = osThreadNew(displayHandler, NULL, &displayTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-  touchscreenTaskHandle = osThreadNew(displayHandler, NULL, &touchscreenTask_attributes);
+
   setupTouchscreenObjects();
   /* add threads, ... */
   setupDebugRtosObjects();
@@ -185,6 +209,9 @@ int main(void)
   /* Create the event(s) */
   /* creation of screenSpiDoneEvent */
   screenSpiDoneEventHandle = osEventFlagsNew(&screenSpiDoneEvent_attributes);
+
+  /* creation of touchSpiDoneEvent */
+  touchSpiDoneEventHandle = osEventFlagsNew(&touchSpiDoneEvent_attributes);
 
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */
@@ -384,7 +411,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : Touch_IRQ_Pin */
   GPIO_InitStruct.Pin = Touch_IRQ_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(Touch_IRQ_GPIO_Port, &GPIO_InitStruct);
 
@@ -394,6 +421,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI4_15_IRQn, 3, 0);
+  HAL_NVIC_EnableIRQ(EXTI4_15_IRQn);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 

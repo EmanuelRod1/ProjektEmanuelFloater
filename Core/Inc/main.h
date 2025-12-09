@@ -41,7 +41,6 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
@@ -59,6 +58,7 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define B1_Pin GPIO_PIN_13
 #define B1_GPIO_Port GPIOC
+#define B1_EXTI_IRQn EXTI4_15_IRQn
 #define MCO_Pin GPIO_PIN_0
 #define MCO_GPIO_Port GPIOH
 #define USART_TX_Pin GPIO_PIN_2
@@ -69,6 +69,7 @@ void Error_Handler(void);
 #define TFT_DC_GPIO_Port GPIOC
 #define Touch_IRQ_Pin GPIO_PIN_10
 #define Touch_IRQ_GPIO_Port GPIOA
+#define Touch_IRQ_EXTI_IRQn EXTI4_15_IRQn
 #define Touch_CS_Pin GPIO_PIN_5
 #define Touch_CS_GPIO_Port GPIOB
 #define TFT_CS_Pin GPIO_PIN_6

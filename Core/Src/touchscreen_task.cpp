@@ -68,9 +68,15 @@ const osMessageQueueAttr_t displayQueue_attributes = {
   .name = "displayQueue"
 };
 
+osMessageQueueId_t touchQueueHandle;
+const osMessageQueueAttr_t touchQueue_attributes = {
+  .name = "touchQueue"
+};
+
 void setupTouchscreenObjects()
 {
     displayQueueHandle = osMessageQueueNew (1, sizeof(display_data_t), &displayQueue_attributes);
+    touchQueueHandle = osMessageQueueNew (1, sizeof(touch_data_t), &touchQueue_attributes);
 }
 
 void touchscreen_fill();
@@ -101,6 +107,7 @@ void display_write_box(uint16_t i, uint16_t j, uint16_t row, const char* str, Fo
 void displayHandler(void *argument)
 {
     display_data_t data;
+    touch_data_t touch_data;
     Debug debug;
 
     debug.printf("Some other test!\r\n");
@@ -113,8 +120,6 @@ void displayHandler(void *argument)
     uint8_t screen_on = RESET;
 
     touchscreen_deinit();
-
-    int x = 0;
 
 
     for(;;)
@@ -139,11 +144,31 @@ void displayHandler(void *argument)
         // turn on screen after getting a message
         if (!screen_on)
         {
+        	osMutexAcquire(spiMutexHandle, osWaitForever);
             // initialize screen
             touchscreen_init();
             //touchscreen_draw_overlay(font.height, 6, character_display_buffer, sizeof(character_display_buffer));
             screen_on = SET;
+
+            osMutexRelease(spiMutexHandle);
         }
+
+
+        if (osMessageQueueGet(touchQueueHandle, (void *)&touch_data, NULL, 0 ) == osOK)
+        {
+        	debug.printf("dddd x: %d, y: %d \r\n", touch_data.x, touch_data.y);
+
+        	osMutexAcquire(spiMutexHandle, osWaitForever);
+
+        	ILI9341_FillRectangle(touch_data.x, touch_data.y, 50, 50, ILI9341_GREEN, character_display_buffer, sizeof(character_display_buffer));
+
+        	osMutexRelease(spiMutexHandle);
+        }
+
+
+
+
+       // ILI9341_FillRectangle(touch_data.x, touch_data.y, 50, 50, ILI9341_GREEN, character_display_buffer, sizeof(character_display_buffer));
 
 
 
@@ -244,9 +269,6 @@ void displayHandler(void *argument)
 
 		*/
 		//ILI9341_DrawImage(0, 0, 240, 240, &test_img_240x240[0][0]);
-        ILI9341_FillRectangle(x, 0, 100, 100, ILI9341_GREEN, character_display_buffer, sizeof(character_display_buffer));
-        x += 4;
-        if (x > 130) x = 130;
 
         //xQueueReceive(xQueue, &dx, portMAX_DELAY);
 
@@ -258,45 +280,42 @@ void displayHandler(void *argument)
 
 
 
-
-
-
-
-
 void touchHandler(void *argument)
 {
 
+
+	touch_data_t touch_data;
+
+
 	Debug debug;
-	int x = 0;
+
+
+	uint16_t x = 0;
+
+	uint16_t y = 0;
+
 	//uint8_t character_display_buffer[Font_11x18.height*Font_11x18.width*2];
     for (;;)
     {
 
-    	debug.printf("tttt test!\r\n");
+    	osSemaphoreAcquire(touchSemaphoreHandle, osWaitForever);
 
-    	x += 5;
+    	osMutexAcquire(spiMutexHandle, osWaitForever);
 
-    	debug.printf("x is : %d\r\n", x);
-        // čeka dok ISR ne postavi semaphore
-        /*if(xSemaphoreTake(touchMutex, portMAX_DELAY) == pdTRUE)
-        {
-            uint16_t x, y;
 
-            // uzmi SPI mutex prije čitanja
-            xSemaphoreTake(mutex, portMAX_DELAY);
 
-            ILI9341_FillRectangle(0, 100, 100, 100, ILI9341_GREEN, character_display_buffer, sizeof(character_display_buffer));
+    	ILI9341_TouchGetCoordinates(&x, &y);
 
-            /*if(ILI9341_TouchGetCoordinates(&x, &y))
-            {
-                // pošalji koordinate na UI queue
+    	touch_data.x = x;
+    	touch_data.y = y;
 
-            }
+    	//debug.printf("ssssss x : %d, y : %d\r\n", x, y);
 
-            ILI9341_TouchUnselect();*/
-            //xSemaphoreGive(mutex);
-        //
-    	osDelay(1000);
+
+    	osMessageQueuePut(touchQueueHandle, &touch_data, 0, 10);
+
+
+    	osMutexRelease(spiMutexHandle);
     }
 }
 
@@ -304,15 +323,10 @@ void touchHandler(void *argument)
 
 
 
-void EXTIx_IRQHandler(void)
+void HAL_GPIO_EXTI_Callback (uint16_t GPIO_Pin)
 {
-    /*BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-
-    HAL_GPIO_EXTI_IRQHandler(Touch_IRQ_Pin);
-
-    // postavi semaphore
-    xSemaphoreGiveFromISR(touchMutex, &xHigherPriorityTaskWoken);
-
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);*/
+	if (GPIO_Pin == Touch_IRQ_Pin)
+	{
+		 osSemaphoreRelease(touchSemaphoreHandle);
+	}
 }
-

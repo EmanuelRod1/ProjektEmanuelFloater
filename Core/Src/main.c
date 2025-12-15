@@ -58,7 +58,7 @@ DMA_HandleTypeDef hdma_usart2_rx;
 osThreadId_t mainTaskHandle;
 const osThreadAttr_t mainTask_attributes = {
   .name = "mainTask",
-  .stack_size = 256 * 4,
+  .stack_size = 250 * 4,
   .priority = (osPriority_t) osPriorityHigh,
 };
 /* Definitions for debugTxTask */
@@ -79,15 +79,25 @@ const osThreadAttr_t debugRxTask_attributes = {
 osThreadId_t touchTaskHandle;
 const osThreadAttr_t touchTask_attributes = {
   .name = "touchTask",
-  .stack_size = 347 * 4,
+  .stack_size = 300 * 4,
   .priority = (osPriority_t) osPriorityRealtime,
 };
 /* Definitions for displayTask */
 osThreadId_t displayTaskHandle;
 const osThreadAttr_t displayTask_attributes = {
   .name = "displayTask",
-  .stack_size = 400 * 4,
+  .stack_size = 350 * 4,
   .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for spiMutex */
+osMutexId_t spiMutexHandle;
+const osMutexAttr_t spiMutex_attributes = {
+  .name = "spiMutex"
+};
+/* Definitions for touchSemaphore */
+osSemaphoreId_t touchSemaphoreHandle;
+const osSemaphoreAttr_t touchSemaphore_attributes = {
+  .name = "touchSemaphore"
 };
 /* Definitions for screenSpiDoneEvent */
 osEventFlagsId_t screenSpiDoneEventHandle;
@@ -164,10 +174,17 @@ int main(void)
 
   /* Init scheduler */
   osKernelInitialize();
+  /* Create the mutex(es) */
+  /* creation of spiMutex */
+  spiMutexHandle = osMutexNew(&spiMutex_attributes);
 
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
+
+  /* Create the semaphores(s) */
+  /* creation of touchSemaphore */
+  touchSemaphoreHandle = osSemaphoreNew(1, 0, &touchSemaphore_attributes);
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
@@ -206,7 +223,6 @@ int main(void)
   setupDebugRtosObjects();
   /* USER CODE END RTOS_THREADS */
 
-  /* Create the event(s) */
   /* creation of screenSpiDoneEvent */
   screenSpiDoneEventHandle = osEventFlagsNew(&screenSpiDoneEvent_attributes);
 

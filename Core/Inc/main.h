@@ -28,6 +28,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l0xx_hal.h"
+#include "cmsis_os.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -82,6 +83,10 @@ void Error_Handler(void);
 #define DEBUG_UART huart2
 
 /* USER CODE END Private defines */
+
+extern osMutexId_t spiMutexHandle;
+
+extern osSemaphoreId_t touchSemaphoreHandle;
 
 #ifdef __cplusplus
 }

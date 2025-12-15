@@ -31,6 +31,13 @@ typedef struct display_data_t
 
 } display_data_t;
 
+
+typedef struct touch_data_t
+{
+	uint16_t x;
+	uint16_t y;
+} touch_data_t;
+
 void setupTouchscreenObjects();
 void displayHandler(void *argument);
 void touchHandler(void *argument);

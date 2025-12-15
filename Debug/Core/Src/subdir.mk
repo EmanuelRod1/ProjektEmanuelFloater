@@ -1,6 +1,6 @@
 ################################################################################
 # Automatically-generated file. Do not edit!
-# Toolchain: custom
+# Toolchain: gnu-custom
 ################################################################################
 
 # Add inputs and outputs from these tool invocations to the build variables 

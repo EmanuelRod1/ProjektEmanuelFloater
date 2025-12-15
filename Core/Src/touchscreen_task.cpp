@@ -56,9 +56,9 @@ void touchscreen_deinit() {
 }
 
 
-static SemaphoreHandle_t mutex = xSemaphoreCreateMutex();
+//static SemaphoreHandle_t mutex = xSemaphoreCreateMutex();
 
-static SemaphoreHandle_t touchMutex = xSemaphoreCreateBinary();
+//static SemaphoreHandle_t touchMutex = xSemaphoreCreateBinary();
 
 
 
@@ -103,7 +103,7 @@ void displayHandler(void *argument)
     display_data_t data;
     Debug debug;
 
-    debug.printf("Some test!\r\n");
+    debug.printf("Some other test!\r\n");
 
     char buffer[DISPLAY_MESSAGE_SIZE];
     FontDef font = Font_11x18;
@@ -114,12 +114,13 @@ void displayHandler(void *argument)
 
     touchscreen_deinit();
 
-    uint16_t dx = 0;
+    int x = 0;
+
 
     for(;;)
     {
-    	dx++;
-    	debug.printf("touch touch! %d \r\n", dx);
+
+    	debug.printf("!!Touch touch touch! \r\n");
 
         // receive payload
         if (osMessageQueueGet(displayQueueHandle, (void *)&data, NULL, SCREEN_TIMEOUT*1000 ) != osOK)
@@ -243,7 +244,9 @@ void displayHandler(void *argument)
 
 		*/
 		//ILI9341_DrawImage(0, 0, 240, 240, &test_img_240x240[0][0]);
-
+        ILI9341_FillRectangle(x, 0, 100, 100, ILI9341_GREEN, character_display_buffer, sizeof(character_display_buffer));
+        x += 4;
+        if (x > 130) x = 130;
 
         //xQueueReceive(xQueue, &dx, portMAX_DELAY);
 
@@ -263,9 +266,17 @@ void displayHandler(void *argument)
 void touchHandler(void *argument)
 {
 
+	Debug debug;
+	int x = 0;
 	//uint8_t character_display_buffer[Font_11x18.height*Font_11x18.width*2];
     for (;;)
     {
+
+    	debug.printf("tttt test!\r\n");
+
+    	x += 5;
+
+    	debug.printf("x is : %d\r\n", x);
         // čeka dok ISR ne postavi semaphore
         /*if(xSemaphoreTake(touchMutex, portMAX_DELAY) == pdTRUE)
         {
@@ -295,13 +306,13 @@ void touchHandler(void *argument)
 
 void EXTIx_IRQHandler(void)
 {
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    /*BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
     HAL_GPIO_EXTI_IRQHandler(Touch_IRQ_Pin);
 
     // postavi semaphore
     xSemaphoreGiveFromISR(touchMutex, &xHigherPriorityTaskWoken);
 
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);*/
 }
 

@@ -1,6 +1,6 @@
 ################################################################################
 # Automatically-generated file. Do not edit!
-# Toolchain: custom
+# Toolchain: gnu-custom
 ################################################################################
 
 -include ../makefile.init

@@ -58,8 +58,8 @@ DMA_HandleTypeDef hdma_usart2_rx;
 osThreadId_t mainTaskHandle;
 const osThreadAttr_t mainTask_attributes = {
   .name = "mainTask",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityHigh,
 };
 /* Definitions for debugTxTask */
 osThreadId_t debugTxTaskHandle;
@@ -79,15 +79,15 @@ const osThreadAttr_t debugRxTask_attributes = {
 osThreadId_t touchTaskHandle;
 const osThreadAttr_t touchTask_attributes = {
   .name = "touchTask",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityAboveNormal,
+  .stack_size = 347 * 4,
+  .priority = (osPriority_t) osPriorityRealtime,
 };
 /* Definitions for displayTask */
 osThreadId_t displayTaskHandle;
 const osThreadAttr_t displayTask_attributes = {
   .name = "displayTask",
-  .stack_size = 350 * 4,
-  .priority = (osPriority_t) osPriorityBelowNormal,
+  .stack_size = 400 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
 };
 /* Definitions for screenSpiDoneEvent */
 osEventFlagsId_t screenSpiDoneEventHandle;
@@ -193,7 +193,7 @@ int main(void)
   //debugRxTaskHandle = osThreadNew(debugRxHandler, NULL, &debugRxTask_attributes);
 
   /* creation of touchTask */
-  //touchTaskHandle = osThreadNew(touchHandler, NULL, &touchTask_attributes);
+  touchTaskHandle = osThreadNew(touchHandler, NULL, &touchTask_attributes);
 
   /* creation of displayTask */
   displayTaskHandle = osThreadNew(displayHandler, NULL, &displayTask_attributes);

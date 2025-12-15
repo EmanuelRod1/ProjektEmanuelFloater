@@ -53,6 +53,6 @@ void mainHandler(void *argument)
 		if (osMessageQueueGetCount(displayQueueHandle)) osMessageQueueReset(displayQueueHandle);
 		osMessageQueuePut(displayQueueHandle, &display_data, 0, 10);
 
-		debug.printf("Test!\r\n");
+		debug.printf("Test! bro\r\n");
 	}
 }

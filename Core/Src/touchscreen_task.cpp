@@ -9,7 +9,6 @@
 #include <stdio.h>
 #include <cmsis_os2.h>
 #include <debug_handler.h>
-#include <../../External/ili9341/testimg.h>
 
 /* LCD SCREEN CODE BEGIN Includes */
 #include <string.h>
@@ -122,13 +121,37 @@ void displayHandler(void *argument)
     touchscreen_deinit();
 
 
+    if (!screen_on)
+	{
+		osMutexAcquire(spiMutexHandle, osWaitForever);
+		// initialize screen
+		touchscreen_init();
+		//touchscreen_draw_overlay(font.height, 6, character_display_buffer, sizeof(character_display_buffer));
+		screen_on = SET;
+
+		osMutexRelease(spiMutexHandle);
+	}
+
+
+
     for(;;)
     {
 
-    	debug.printf("!!Touch touch touch! \r\n");
+    	if (osMessageQueueGet(touchQueueHandle, (void *)&touch_data, NULL, osWaitForever ) == osOK)
+		{
+			debug.printf("recieved x: %d, y: %d \r\n", touch_data.x, touch_data.y);
+
+			osMutexAcquire(spiMutexHandle, osWaitForever);
+
+			ILI9341_FillRectangle(0, touch_data.y, 50, 50, ILI9341_GREEN, character_display_buffer, sizeof(character_display_buffer));
+
+			osMutexRelease(spiMutexHandle);
+		}
+
+    	//debug.printf("!!Touch touch touch! \r\n");
 
         // receive payload
-        if (osMessageQueueGet(displayQueueHandle, (void *)&data, NULL, SCREEN_TIMEOUT*1000 ) != osOK)
+        /*if (osMessageQueueGet(displayQueueHandle, (void *)&data, NULL, SCREEN_TIMEOUT*1000 ) != osOK)
         {
             // when screen on, turn off
             if (screen_on)
@@ -138,32 +161,14 @@ void displayHandler(void *argument)
                 screen_on = RESET;
             }
             continue;
-        }
+        }*/
 
 
         // turn on screen after getting a message
-        if (!screen_on)
-        {
-        	osMutexAcquire(spiMutexHandle, osWaitForever);
-            // initialize screen
-            touchscreen_init();
-            //touchscreen_draw_overlay(font.height, 6, character_display_buffer, sizeof(character_display_buffer));
-            screen_on = SET;
-
-            osMutexRelease(spiMutexHandle);
-        }
 
 
-        if (osMessageQueueGet(touchQueueHandle, (void *)&touch_data, NULL, 0 ) == osOK)
-        {
-        	debug.printf("dddd x: %d, y: %d \r\n", touch_data.x, touch_data.y);
 
-        	osMutexAcquire(spiMutexHandle, osWaitForever);
 
-        	ILI9341_FillRectangle(touch_data.x, touch_data.y, 50, 50, ILI9341_GREEN, character_display_buffer, sizeof(character_display_buffer));
-
-        	osMutexRelease(spiMutexHandle);
-        }
 
 
 
@@ -286,8 +291,6 @@ void touchHandler(void *argument)
 
 	touch_data_t touch_data;
 
-
-	Debug debug;
 
 
 	uint16_t x = 0;

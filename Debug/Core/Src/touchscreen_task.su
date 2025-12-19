@@ -1,10 +1,10 @@
-../Core/Src/touchscreen_task.cpp:34:6:void touchscreen_on()	8	static
-../Core/Src/touchscreen_task.cpp:39:6:void touchscreen_off()	8	static
-../Core/Src/touchscreen_task.cpp:44:6:void touchscreen_init()	8	static
-../Core/Src/touchscreen_task.cpp:52:6:void touchscreen_deinit()	8	static
-../Core/Src/touchscreen_task.cpp:76:6:void setupTouchscreenObjects()	8	static
-../Core/Src/touchscreen_task.cpp:88:6:void touchscreen_draw_overlay(uint8_t, uint8_t, uint8_t*, uint16_t)	48	static
-../Core/Src/touchscreen_task.cpp:101:6:void display_write_box(uint16_t, uint16_t, uint16_t, const char*, FontDef, uint16_t, uint16_t, uint8_t*, uint16_t)	72	static
-../Core/Src/touchscreen_task.cpp:107:6:void displayHandler(void*)	512	dynamic
-../Core/Src/touchscreen_task.cpp:283:6:void touchHandler(void*)	288	static
-../Core/Src/touchscreen_task.cpp:326:6:void HAL_GPIO_EXTI_Callback(uint16_t)	16	static
+../Core/Src/touchscreen_task.cpp:33:6:void touchscreen_on()	8	static
+../Core/Src/touchscreen_task.cpp:38:6:void touchscreen_off()	8	static
+../Core/Src/touchscreen_task.cpp:43:6:void touchscreen_init()	8	static
+../Core/Src/touchscreen_task.cpp:51:6:void touchscreen_deinit()	8	static
+../Core/Src/touchscreen_task.cpp:75:6:void setupTouchscreenObjects()	8	static
+../Core/Src/touchscreen_task.cpp:87:6:void touchscreen_draw_overlay(uint8_t, uint8_t, uint8_t*, uint16_t)	48	static
+../Core/Src/touchscreen_task.cpp:100:6:void display_write_box(uint16_t, uint16_t, uint16_t, const char*, FontDef, uint16_t, uint16_t, uint8_t*, uint16_t)	72	static
+../Core/Src/touchscreen_task.cpp:106:6:void displayHandler(void*)	504	dynamic
+../Core/Src/touchscreen_task.cpp:288:6:void touchHandler(void*)	32	static
+../Core/Src/touchscreen_task.cpp:329:6:void HAL_GPIO_EXTI_Callback(uint16_t)	16	static

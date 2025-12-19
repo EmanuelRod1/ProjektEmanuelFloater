@@ -1,7 +1,7 @@
 Core/Src/touchscreen_task.o: ../Core/Src/touchscreen_task.cpp \
  ../Core/Inc/touchscreen_task.h ../Core/Inc/version.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h \
- ../Core/Inc/debug_handler.h ../Core/Inc/../../External/ili9341/testimg.h \
+ ../Core/Inc/debug_handler.h \
  /home/emanuel/STM32CubeIDE/workspace_1.18.0/ProjektEmanuelFloater/External/ili9341/ili9341.h \
  /home/emanuel/STM32CubeIDE/workspace_1.18.0/ProjektEmanuelFloater/External/ili9341/fonts.h \
  ../Core/Inc/main.h ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal.h \
@@ -57,7 +57,6 @@ Core/Src/touchscreen_task.o: ../Core/Src/touchscreen_task.cpp \
 ../Core/Inc/version.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h:
 ../Core/Inc/debug_handler.h:
-../Core/Inc/../../External/ili9341/testimg.h:
 /home/emanuel/STM32CubeIDE/workspace_1.18.0/ProjektEmanuelFloater/External/ili9341/ili9341.h:
 /home/emanuel/STM32CubeIDE/workspace_1.18.0/ProjektEmanuelFloater/External/ili9341/fonts.h:
 ../Core/Inc/main.h:

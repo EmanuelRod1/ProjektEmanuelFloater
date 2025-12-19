@@ -143,7 +143,7 @@ void displayHandler(void *argument)
 
 			osMutexAcquire(spiMutexHandle, osWaitForever);
 
-			ILI9341_FillRectangle(0, touch_data.y, 50, 50, ILI9341_GREEN, character_display_buffer, sizeof(character_display_buffer));
+			ILI9341_FillRectangle(touch_data.x, touch_data.y, 50, 50, ILI9341_GREEN, character_display_buffer, sizeof(character_display_buffer));
 
 			osMutexRelease(spiMutexHandle);
 		}

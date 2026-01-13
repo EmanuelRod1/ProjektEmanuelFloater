@@ -28,6 +28,7 @@
 #include <main_task.h>
 #include <FreeRTOS.h>
 #include <queue.h>
+#include "lvgl.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -166,6 +167,9 @@ int main(void)
   MX_USART2_UART_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
+  lv_init();
+
+  lv_port_disp_init();
 
   /* Register callbacks */
   registerDebugCallbacks();
@@ -500,6 +504,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   if (htim->Instance == TIM6)
   {
     HAL_IncTick();
+    lv_tick_inc(1);
   }
   /* USER CODE BEGIN Callback 1 */
 

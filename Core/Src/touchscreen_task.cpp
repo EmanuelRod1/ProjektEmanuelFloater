@@ -9,6 +9,10 @@
 #include <stdio.h>
 #include <cmsis_os2.h>
 #include <debug_handler.h>
+extern "C" {
+#include "lvgl.h"
+}
+
 
 /* LCD SCREEN CODE BEGIN Includes */
 #include <string.h>
@@ -28,6 +32,7 @@ extern "C" {
 #include <queue.h>
 #include "semphr.h"
 #include <time.h>
+
 /* LCD SCREEN CODE END Includes */
 
 void touchscreen_on() {
@@ -78,50 +83,50 @@ void setupTouchscreenObjects()
     touchQueueHandle = osMessageQueueNew (1, sizeof(touch_data_t), &touchQueue_attributes);
 }
 
-void touchscreen_fill();
-
-#define TEXT_SPACING 5
-#define LINE_SIZE 1
-#define SCREEN_TIMEOUT 10
-
-void touchscreen_draw_overlay(uint8_t font_height, uint8_t rows, uint8_t* display_buffer, uint16_t display_buffer_size)
-{
-    uint16_t box_height = TEXT_SPACING*3 + font_height*2 + LINE_SIZE*2;
-    ILI9341_FillScreen(ILI9341_BLACK, display_buffer, display_buffer_size);
-    // make grid
-    ILI9341_FillRectangle(ILI9341_WIDTH / 2, box_height, LINE_SIZE, ILI9341_HEIGHT - box_height, ILI9341_WHITE, display_buffer, display_buffer_size);
-
-    for (int i=1; i < rows; i++)
-    {
-        ILI9341_FillRectangle(0, box_height*i, ILI9341_WIDTH, LINE_SIZE, ILI9341_WHITE, display_buffer, display_buffer_size);
-    }
-}
-
-void display_write_box(uint16_t i, uint16_t j, uint16_t row, const char* str, FontDef font, uint16_t color, uint16_t bgcolor, uint8_t* display_buffer, uint16_t display_buffer_size)
-{
-    uint16_t box_height = TEXT_SPACING*3 + font.height*2 + LINE_SIZE*2;
-    ILI9341_WriteString((ILI9341_WIDTH/2 + 2)*j, box_height*i + TEXT_SPACING + row*(font.height + TEXT_SPACING), str, font, color, bgcolor, display_buffer, display_buffer_size);
-}
+//void touchscreen_fill();
+//
+//#define TEXT_SPACING 5
+//#define LINE_SIZE 1
+//#define SCREEN_TIMEOUT 10
+//
+//void touchscreen_draw_overlay(uint8_t font_height, uint8_t rows, uint8_t* display_buffer, uint16_t display_buffer_size)
+//{
+//    uint16_t box_height = TEXT_SPACING*3 + font_height*2 + LINE_SIZE*2;
+//    ILI9341_FillScreen(ILI9341_BLACK, display_buffer, display_buffer_size);
+//    // make grid
+//    ILI9341_FillRectangle(ILI9341_WIDTH / 2, box_height, LINE_SIZE, ILI9341_HEIGHT - box_height, ILI9341_WHITE, display_buffer, display_buffer_size);
+//
+//    for (int i=1; i < rows; i++)
+//    {
+//        ILI9341_FillRectangle(0, box_height*i, ILI9341_WIDTH, LINE_SIZE, ILI9341_WHITE, display_buffer, display_buffer_size);
+//    }
+//}
+//
+//void display_write_box(uint16_t i, uint16_t j, uint16_t row, const char* str, FontDef font, uint16_t color, uint16_t bgcolor, uint8_t* display_buffer, uint16_t display_buffer_size)
+//{
+//    uint16_t box_height = TEXT_SPACING*3 + font.height*2 + LINE_SIZE*2;
+//    ILI9341_WriteString((ILI9341_WIDTH/2 + 2)*j, box_height*i + TEXT_SPACING + row*(font.height + TEXT_SPACING), str, font, color, bgcolor, display_buffer, display_buffer_size);
+//}
 
 void displayHandler(void *argument)
 {
-    display_data_t data;
-    touch_data_t touch_data;
-    Debug debug;
+//    display_data_t data;
+//    touch_data_t touch_data;
+//    Debug debug;
+//
+//    debug.printf("Some other test!\r\n");
+//
+//    char buffer[DISPLAY_MESSAGE_SIZE];
+//    FontDef font = Font_11x18;
+//    uint8_t character_display_buffer[Font_11x18.height*Font_11x18.width*2];
+//    uint16_t color_body = ILI9341_RED;
+//    uint16_t color_title = ILI9341_GREEN;
+//    uint8_t screen_on = RESET;
 
-    debug.printf("Some other test!\r\n");
-
-    char buffer[DISPLAY_MESSAGE_SIZE];
-    FontDef font = Font_11x18;
-    uint8_t character_display_buffer[Font_11x18.height*Font_11x18.width*2];
-    uint16_t color_body = ILI9341_RED;
-    uint16_t color_title = ILI9341_GREEN;
-    uint8_t screen_on = RESET;
-
-    touchscreen_deinit();
+    //touchscreen_deinit();
 
 
-    if (!screen_on)
+    /*if (!screen_on)
 	{
 		osMutexAcquire(spiMutexHandle, osWaitForever);
 		// initialize screen
@@ -130,14 +135,18 @@ void displayHandler(void *argument)
 		screen_on = SET;
 
 		osMutexRelease(spiMutexHandle);
-	}
+	}*/
 
 
 
     for(;;)
     {
 
-    	if (osMessageQueueGet(touchQueueHandle, (void *)&touch_data, NULL, osWaitForever ) == osOK)
+
+    	lv_timer_handler();
+    	osDelay(20);
+
+    	/*if (osMessageQueueGet(touchQueueHandle, (void *)&touch_data, NULL, osWaitForever ) == osOK)
 		{
 			debug.printf("recieved x: %d, y: %d \r\n", touch_data.x, touch_data.y);
 
@@ -146,7 +155,7 @@ void displayHandler(void *argument)
 			ILI9341_FillRectangle(touch_data.x, touch_data.y, 50, 50, ILI9341_GREEN, character_display_buffer, sizeof(character_display_buffer));
 
 			osMutexRelease(spiMutexHandle);
-		}
+		}*/
 
     	//debug.printf("!!Touch touch touch! \r\n");
 

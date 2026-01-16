@@ -6,5 +6,5 @@
 ../Core/Src/touchscreen_task.cpp:87:6:void touchscreen_draw_overlay(uint8_t, uint8_t, uint8_t*, uint16_t)	48	static
 ../Core/Src/touchscreen_task.cpp:100:6:void display_write_box(uint16_t, uint16_t, uint16_t, const char*, FontDef, uint16_t, uint16_t, uint8_t*, uint16_t)	72	static
 ../Core/Src/touchscreen_task.cpp:106:6:void displayHandler(void*)	504	dynamic
-../Core/Src/touchscreen_task.cpp:288:6:void touchHandler(void*)	32	static
-../Core/Src/touchscreen_task.cpp:329:6:void HAL_GPIO_EXTI_Callback(uint16_t)	16	static
+../Core/Src/touchscreen_task.cpp:291:6:void touchHandler(void*)	32	static
+../Core/Src/touchscreen_task.cpp:332:6:void HAL_GPIO_EXTI_Callback(uint16_t)	16	static

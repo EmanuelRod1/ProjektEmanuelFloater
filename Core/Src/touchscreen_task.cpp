@@ -132,7 +132,10 @@ void displayHandler(void *argument)
 		osMutexRelease(spiMutexHandle);
 	}
 
-
+    osDelay(1000);
+    ILI9341_FillRectangle(0, 0, 240, 320, ILI9341_WHITE, character_display_buffer, sizeof(character_display_buffer));
+    osDelay(1000);
+    ILI9341_FillRectangle(120, 160, 5, 5, ILI9341_RED, character_display_buffer, sizeof(character_display_buffer));
 
     for(;;)
     {
@@ -143,7 +146,7 @@ void displayHandler(void *argument)
 
 			osMutexAcquire(spiMutexHandle, osWaitForever);
 
-			ILI9341_FillRectangle(touch_data.x, touch_data.y, 50, 50, ILI9341_GREEN, character_display_buffer, sizeof(character_display_buffer));
+			ILI9341_FillRectangle(ILI9341_TOUCH_SCALE_X - touch_data.x, ILI9341_TOUCH_SCALE_Y - touch_data.y, 5, 5, ILI9341_GREEN, character_display_buffer, sizeof(character_display_buffer));
 
 			osMutexRelease(spiMutexHandle);
 		}

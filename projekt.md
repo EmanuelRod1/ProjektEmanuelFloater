@@ -27,7 +27,7 @@ Pretpostavljam da se radi o tome što ja stvaram nekakvo uzemljenje čime smanju
 Dakle, moguće je da nije problem u sfotware-u već u hardware-u.
 Također, kada se drži pločica u ruci i pomći olovka po ekranu, mogu se naići na područja ekrana gdje koordinate "skaču" na vrijednosti koje nisu nimalo blizu onima koje bi trebale biti. Pretpostavljam da se radi o tome što moguć problem u hardware-u uzrokuje jako loše očitavanje podataka i kada nisu zamrznuti.
 
-## Neka linkovi
+## Neki linkovi
 
 Naišao sam na određene izvore koji bi bili moguće korisni za ovaj problem:
 * https://github.com/maudeve-it/ILI9XXX-XPT2046-STM32
